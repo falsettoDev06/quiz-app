@@ -1,22 +1,37 @@
-import {useState, useEffect} from "react";
-
-function Button({options, isCorrect}){
-  const [color, setColor] = useState("text-black");
-  const [isClicked, setIsClicked] = useState(false);
-  function handleClick(){
-    if (isClicked) return;
-    if(options == isCorrect){
-      setColor("bg-green-500 text-white");
-      
-    }else{
-      setColor("bg-red-500 text-white");
+import { useState } from "react";
+import { useQuizContext } from "../context/QuizContext";
+function Button({ option, correct,}) {
+  const { score, setScore, reveal, setReveal, revealAnswer } = useQuizContext();
+  const [status, setStatus] = useState("idle");
+  function handleClick() {
+    if (reveal) return;
+    if (option === correct) {
+      setStatus("correct");
+      setScore(prevScore => prevScore + 1);
+    } else {
+      setStatus("incorrect");
+      setScore(prevScore => prevScore <= 0? 0 : prevScore - 1);
     }
-    setIsClicked(true);
+    revealAnswer();
   }
-  
-  return(
-    <button className={`w-200 text-3xl h-20 border-4 border-black rounded-4xl font-bold cursor-pointer ${color} m-1.5 ease-in duration-100 `} onClick={handleClick}>{options}</button>
-  )
+  function getStatusColor(currentStatus, reveal) {
+    const base =
+      "w-200 h-30 border-4 border-black rounded-4xl font-bold cursor-pointer my-2 text-3xl";
+    if (reveal) {
+      return `${base} ${correct === option ? "bg-green-200 border-8 border-solid border-green-400" : "bg-red-500 border-8 border-solid border-red-700 text-white"}`;
+    } else if (currentStatus === "idle") {
+      return base;
+    } else if (currentStatus === "correct") {
+      return `${base} bg-green-200 border-8 border-solid border-green-400`;
+    } else if (currentStatus === "incorrect") {
+      return `${base} bg-red-500 border-8 border-solid border-red-700 text-white`;
+    }
+  }
+  return (
+    <button className={getStatusColor(status, reveal)} onClick={handleClick}>
+      {option}
+    </button>
+  );
 }
 
 export default Button;
