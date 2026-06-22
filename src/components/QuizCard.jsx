@@ -1,22 +1,19 @@
 import { useState } from "react";
 import Button from "./Button";
-
-function QuizCard({questions, answers}) {
-  const [counter, setCounter] = useState(0);
-  const [reveal, setReveal] = useState(false);
-  
-  
+import { useQuizContext } from "../context/QuizContext";
+function QuizCard() {
+  const { counter, quizData} = useQuizContext();
   return (
-    <div className="300 h-200 shadow-xl rounded-4xl p-16 flex flex-col justify-between">
-      <p className="text-5xl h-30">
-        {questions[counter].id}. {questions[counter].question}
+    <div className="w-300 h-210 shadow-xl rounded-4xl p-16 flex flex-col justify-between">
+      <p className="text-5xl h-30 max-h-35">
+        {quizData[counter].id}. {quizData[counter].question}
       </p>
       <div className="flex flex-col justify-center items-center py-6">
-        {answers[counter].options.map((option, i) => (
+        {quizData[counter].options.map((option, i) => (
           <Button
             option={option}
             key={i}
-            correct={answers[counter].correct}
+            correct={quizData[counter].correct}
           />
         ))}
       </div>

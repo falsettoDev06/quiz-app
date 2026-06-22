@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuizContext } from "../context/QuizContext";
 function Button({ option, correct,}) {
-  const { score, setScore, reveal, setReveal, revealAnswer } = useQuizContext();
+  const { score, setScore, reveal, setRevealTrue} = useQuizContext();
   const [status, setStatus] = useState("idle");
   function handleClick() {
     if (reveal) return;
@@ -10,16 +10,19 @@ function Button({ option, correct,}) {
       setScore(prevScore => prevScore + 1);
     } else {
       setStatus("incorrect");
-      setScore(prevScore => prevScore <= 0? 0 : prevScore - 1);
+      setScore(prevScore => prevScore <= 0? prevScore : prevScore - 1);
     }
-    revealAnswer();
+    setRevealTrue();
   }
   function getStatusColor(currentStatus, reveal) {
     const base =
       "w-200 h-30 border-4 border-black rounded-4xl font-bold cursor-pointer my-2 text-3xl";
     if (reveal) {
       return `${base} ${correct === option ? "bg-green-200 border-8 border-solid border-green-400" : "bg-red-500 border-8 border-solid border-red-700 text-white"}`;
-    } else if (currentStatus === "idle") {
+    }else if (!reveal){
+      return base
+    }
+    else if (currentStatus === "idle") {
       return base;
     } else if (currentStatus === "correct") {
       return `${base} bg-green-200 border-8 border-solid border-green-400`;
