@@ -4,8 +4,8 @@ import { useQuizContext } from "../context/QuizContext";
 function QuizCard() {
   const { counter, quizData} = useQuizContext();
   return (
-    <div className="w-300 h-210 shadow-xl rounded-4xl p-16 flex flex-col justify-between">
-      <p className="text-5xl h-30 max-h-35">
+    <div className="card bg-base-100 shadow-xl items-center text-center w-270 h-187 p-16 flex flex-col justify-between">
+      <p className="text-5xl h-30 max-h-35 text-center">
         {quizData[counter].id}. {quizData[counter].question}
       </p>
       <div className="flex flex-col justify-center items-center py-6">

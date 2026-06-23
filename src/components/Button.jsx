@@ -16,16 +16,16 @@ function Button({ option, correct,}) {
   }
   function getStatusColor(currentStatus, reveal) {
     const base =
-      "w-200 h-30 border-4 border-black rounded-4xl font-bold cursor-pointer my-2 text-3xl";
+      "w-200 h-25 border-4 border-primary rounded-4xl font-bold cursor-pointer my-2 text-3xl hover:scale-105 duration-100";
     if (reveal) {
-      return `${base} ${correct === option ? "bg-green-200 border-8 border-solid border-green-400" : "bg-red-500 border-8 border-solid border-red-700 text-white"}`;
+      return `${base} ${correct === option ? "bg-green-200 border-8 border-solid border-green-400 text-black" : "bg-red-500 border-8 border-solid border-red-700 text-white"}`;
     }else if (!reveal){
       return base
     }
     else if (currentStatus === "idle") {
       return base;
     } else if (currentStatus === "correct") {
-      return `${base} bg-green-200 border-8 border-solid border-green-400`;
+      return `${base} bg-green-200 border-8 border-solid border-green-400 text-black`;
     } else if (currentStatus === "incorrect") {
       return `${base} bg-red-500 border-8 border-solid border-red-700 text-white`;
     }

@@ -88,7 +88,8 @@ export const QuizProvider = ({ children }) => {
     score,
     counter,
     quizData,
-    reveal
+    reveal,
+    setCounter,
   };
   return <QuizContext.Provider value={value}>{children}</QuizContext.Provider>;
 };
