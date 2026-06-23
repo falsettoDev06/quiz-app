@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const QuizContext = createContext();
 
@@ -71,6 +71,27 @@ export const QuizProvider = ({ children }) => {
   const setRevealTrue = () => setReveal(true);
   const setRevealFalse = () => setReveal(false);
   const [reveal, setReveal] = useState(false);
+  const [quizTime, setQuizTime] = useState(0);
+  const [smallTimer, setSmallTimer] = useState(30);
+
+  useEffect(() => {
+    const startTime = Date.now();
+
+    const timer = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      const remaining = 30 - elapsed;
+
+      if (remaining <= 0) {
+        setCounter((c) => (c === 9 ? c : c + 1));
+        setSmallTimer(30);
+      } else {
+        setSmallTimer(remaining);
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [counter]);
+
   const reduceCounter = () => {
     setRevealFalse();
     setCounter((prev) => (prev === 0 ? prev : prev - 1));
@@ -85,11 +106,12 @@ export const QuizProvider = ({ children }) => {
     setRevealFalse,
     reduceCounter,
     addCounter,
-    score,
-    counter,
-    quizData,
-    reveal,
     setCounter,
+    score,
+    reveal,
+    counter,
+    smallTimer,
+    quizData,
   };
   return <QuizContext.Provider value={value}>{children}</QuizContext.Provider>;
 };
