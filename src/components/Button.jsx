@@ -18,17 +18,13 @@ function Button({ option, correct,}) {
     const base =
       "w-200 h-25 border-4 border-primary rounded-4xl font-bold cursor-pointer my-2 text-3xl hover:scale-105 duration-100";
     if (reveal) {
-      return `${base} ${correct === option ? "bg-green-200 border-8 border-solid border-green-400 text-black" : "bg-red-500 border-8 border-solid border-red-700 text-white"}`;
-    }else if (!reveal){
-      return base
+    if (correct === option) {
+      return base.replace("border-primary", "") + " border-8 border-green-500 text-green-700";
+    } else {
+      return base.replace("border-primary", "") + " border-8 border-red-500 text-red-700";
     }
-    else if (currentStatus === "idle") {
-      return base;
-    } else if (currentStatus === "correct") {
-      return `${base} bg-green-200 border-8 border-solid border-green-400 text-black`;
-    } else if (currentStatus === "incorrect") {
-      return `${base} bg-red-500 border-8 border-solid border-red-700 text-white`;
-    }
+  }
+    return base;
   }
   return (
     <button className={getStatusColor(status, reveal)} onClick={handleClick}>
