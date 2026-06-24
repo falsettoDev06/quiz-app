@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Button from "./Button";
 import { useQuizContext } from "../context/QuizContext";
+
 function QuizCard() {
   const { counter, quizData} = useQuizContext();
   return (

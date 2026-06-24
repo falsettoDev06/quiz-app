@@ -1,8 +1,5 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useRef } from "react";
 
-const QuizContext = createContext();
-
-export const useQuizContext = () => useContext(QuizContext);
 const quizData = [
   {
     id: 1,
@@ -65,16 +62,29 @@ const quizData = [
     correct: "Blue Whale",
   },
 ];
+
+const QuizContext = createContext();
+
+export const useQuizContext = () => useContext(QuizContext);
+
 export const QuizProvider = ({ children }) => {
   const [score, setScore] = useState(0);
   const [counter, setCounter] = useState(0);
+
   const setRevealTrue = () => setReveal(true);
   const setRevealFalse = () => setReveal(false);
   const [reveal, setReveal] = useState(false);
-  const [quizTime, setQuizTime] = useState(0);
+
   const [smallTimer, setSmallTimer] = useState(30);
 
+  //Stopwatch states
+  const [isRunning, setIsRunning] = useState(false);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const intervalIdRef = useRef(null);
+  const startTimeRef = useRef(null);
+
   useEffect(() => {
+    if (reveal) return;
     const startTime = Date.now();
 
     const timer = setInterval(() => {
@@ -84,13 +94,14 @@ export const QuizProvider = ({ children }) => {
       if (remaining <= 0) {
         setCounter((c) => (c === 9 ? c : c + 1));
         setSmallTimer(30);
+        setRevealFalse();
       } else {
         setSmallTimer(remaining);
       }
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [counter]);
+  }, [counter, reveal, setReveal]);
 
   const reduceCounter = () => {
     setRevealFalse();
@@ -99,6 +110,37 @@ export const QuizProvider = ({ children }) => {
   const addCounter = () => {
     setRevealFalse();
     setCounter((prev) => (prev === 9 ? prev : prev + 1));
+  };
+
+  //Stopwatch
+  useEffect(() => {
+    if (isRunning) {
+      startTimeRef.current = Date.now() - elapsedTime;
+      intervalIdRef.current = setInterval(() => {
+        setElapsedTime(Date.now() - startTimeRef.current);
+      }, 10);
+    } else {
+      clearInterval(intervalIdRef.current);
+    }
+  }, [isRunning]);
+  const formatTime = () => {
+    const minutes = Math.floor((elapsedTime % 3600000) / 60000);
+    const seconds = Math.floor((elapsedTime % 60000) / 1000);
+    const milliseconds = Math.floor((elapsedTime % 1000) / 10);
+    return `${padZero(minutes)}:${padZero(seconds)}.${padZero(milliseconds)}`;
+  };
+  const padZero = (num) => {
+    return (num < 10 ? "0" : "") + num;
+  };
+  const handleStart = () => {
+    setIsRunning(true);
+  };
+  const handleStop = () => {
+    setIsRunning(false);
+  };
+  const handleReset = () => {
+    setIsRunning(false);
+    setElapsedTime(0);
   };
   const value = {
     setScore,
@@ -112,6 +154,11 @@ export const QuizProvider = ({ children }) => {
     counter,
     smallTimer,
     quizData,
+    isRunning,
+    formatTime,
+    handleStart,
+    handleStop,
+    handleReset,
   };
   return <QuizContext.Provider value={value}>{children}</QuizContext.Provider>;
 };
