@@ -15,7 +15,8 @@ function QuizPlay() {
   } = useQuizContext();
 
   const handleCountdownColor = () => {
-    const base = "font-bold text-7xl transition-all duration-500 ease-in-out";
+    const base =
+      "font-bold text-6xl lg:text-7xl transition-all duration-500 ease-in-out";
     if (smallTimer <= 10) {
       return base + " text-red-500 scale-110";
     }
@@ -37,32 +38,30 @@ function QuizPlay() {
   }, [counter, reveal, handleStop, handleStart]);
 
   return (
-    <div className="relative">
+    <div className="relative bg-base-200">
       <div className={reveal && counter === 9 ? "blur-sm" : ""}>
-        <div className="flex flex-row justify-center items-center px-25 h-screen">
-          <div className="h-50 w-50 rounded-4xl border-8 border-green-500 mx-15 invisible"></div>
-          <div className="flex flex-col justify-center items-center h-screen">
+        <div className="flex flex-col justify-evenly items-center h-screen">
+          <div className="flex py-10">
+            <i class="fa-solid fa-stopwatch text-5xl lg:text-7xl flex items-center"></i>
             <p className={handleCountdownColor()}>{smallTimer}</p>
-            <QuizCard />
-            <div className="w-auto h-25 m-3 flex justify-center items-center">
-              <progress
-                className="progress progress-primary w-250 h-4 my-3 transition-all duration-500 ease-in-out"
-                value={(counter + 1) * 10}
-                max="100"
-              ></progress>
-            </div>
           </div>
-          <div
-            className={`h-50 w-50 rounded-4xl border-8 border-green-500 flex items-center justify-center shadow-2xl hover:scale-110 duration-100 cursor-pointer mx-15 ${!reveal || counter === 9 ? "invisible" : ""}`}
+            <QuizCard />
+          <button
+            className={`btn btn-accent btn-md lg:btn-lg w-80 h-15 my-2 lg:h-18 lg:w-100 rounded-full text-3xl shadow-xl transition-transform hover:scale-105 duration-100 ease-in-out ${!reveal || counter === 9 ? "invisible" : ""}`}
             onClick={addCounter}
           >
-            <i className="fa-solid fa-caret-right text-8xl text-green-500"></i>
-          </div>
+            Next
+          </button>
+          <progress
+            className="progress progress-primary w-85 lg:w-250 h-4 my-3 transition-all duration-500 ease-in-out"
+            value={(counter + 1) * 10}
+            max="100"
+          ></progress>
         </div>
       </div>
       {reveal && counter === 9 && (
         <button
-          className="btn btn-primary btn-lg w-72 h-20 rounded-full text-3xl shadow-xl transition-transform hover:scale-105 absolute  top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          className="btn btn-primary lg:btn-lg lg:w-72 w-50 lg:h-20 h-15 rounded-full lg:text-3xl text-2xl shadow-xl transition-transform hover:scale-105 absolute  top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
           onClick={handleShowResultBtn}
         >
           Result
