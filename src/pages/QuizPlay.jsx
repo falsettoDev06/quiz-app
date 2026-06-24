@@ -53,7 +53,7 @@ function QuizPlay() {
             </div>
           </div>
           <div
-            className={`h-50 w-50 rounded-4xl border-8 border-green-500 flex items-center justify-center shadow-2xl hover:scale-110 duration-100 cursor-pointer mx-15 ${!reveal ? "invisible" : ""}`}
+            className={`h-50 w-50 rounded-4xl border-8 border-green-500 flex items-center justify-center shadow-2xl hover:scale-110 duration-100 cursor-pointer mx-15 ${!reveal || counter === 9 ? "invisible" : ""}`}
             onClick={addCounter}
           >
             <i className="fa-solid fa-caret-right text-8xl text-green-500"></i>

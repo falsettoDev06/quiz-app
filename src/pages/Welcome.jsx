@@ -15,7 +15,7 @@ function Welcome() {
           Quiz Time
         </h1>
 
-        <p className="text-xl text-base-content/70 mb-12">
+        <p className="lg:text-xl text-lg text-base-content/70 mb-12">
           Test your knowledge, challenge yourself, and aim for the top score.
           Are you ready to begin your journey?
         </p>
