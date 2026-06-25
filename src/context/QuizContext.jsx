@@ -124,10 +124,9 @@ export const QuizProvider = ({ children }) => {
     }
   }, [isRunning]);
   const formatTime = () => {
-    const minutes = Math.floor((elapsedTime % 3600000) / 60000);
-    const seconds = Math.floor((elapsedTime % 60000) / 1000);
-    const milliseconds = Math.floor((elapsedTime % 1000) / 10);
-    return `${padZero(minutes)}:${padZero(seconds)}.${padZero(milliseconds)}`;
+    const minutes = Math.floor(counter / 60);
+    const seconds = counter % 60;
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
   const padZero = (num) => {
     return (num < 10 ? "0" : "") + num;

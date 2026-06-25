@@ -16,7 +16,7 @@ function QuizPlay() {
 
   const handleCountdownColor = () => {
     const base =
-      "font-bold text-6xl lg:text-7xl transition-all duration-500 ease-in-out";
+      "font-bold text-5xl lg:text-7xl transition-all duration-500 ease-in-out";
     if (smallTimer <= 10) {
       return base + " text-red-500 scale-110";
     }
@@ -42,7 +42,7 @@ function QuizPlay() {
       <div className={reveal && counter === 9 ? "blur-sm" : ""}>
         <div className="flex flex-col justify-evenly items-center h-screen">
           <div className="flex py-10">
-            <i class="fa-solid fa-stopwatch text-5xl lg:text-7xl flex items-center"></i>
+            <i className="fa-solid fa-stopwatch text-5xl lg:text-7xl flex items-center"></i>
             <p className={handleCountdownColor()}>{smallTimer}</p>
           </div>
             <QuizCard />
