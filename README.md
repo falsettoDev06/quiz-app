@@ -21,7 +21,7 @@ https://roadmap.sh/projects/quiz-app
 
 ## 🚀 How to Run Locally
 1. Clone the repository:
-   `git clone https://github.com/Falsetto-bon/quiz-app`
+   `git clone https://github.com/falsettoDev06/quiz-app`
 2. Install dependencies:
    `npm install`
 3. Run the development server:
