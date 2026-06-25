@@ -5,6 +5,9 @@ A fully responsive, interactive quiz application built with React, Tailwind CSS,
 ## 🚀 Live Demo
 https://react-quiz-app-mu-ten.vercel.app
 
+## 🔗 Project Page
+https://roadmap.sh/projects/quiz-app
+
 ## 🛠 Tech Stack
 - **Framework:** React (Vite)
 - **Styling:** Tailwind CSS & DaisyUI
