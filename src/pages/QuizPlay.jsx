@@ -40,7 +40,7 @@ function QuizPlay() {
   return (
     <div className="relative bg-base-200">
       <div className={reveal && counter === 9 ? "blur-sm" : ""}>
-        <div className="flex flex-col justify-evenly items-center h-screen">
+        <div className="flex flex-col justify-evenly items-center min-h-screen">
           <div className="flex py-10">
             <i className="fa-solid fa-stopwatch text-5xl lg:text-7xl flex items-center"></i>
             <p className={handleCountdownColor()}>{smallTimer}</p>
@@ -53,7 +53,7 @@ function QuizPlay() {
             Next
           </button>
           <progress
-            className="progress progress-primary h-4 my-3 transition-all duration-500 ease-in-out w-[320px] lg:w-[800px]"
+            className="progress progress-primary h-4 my-3 transition-all duration-500 ease-in-out w-[90%] lg:w-200"
             value={(counter + 1) * 10}
             max="100"
           ></progress>
