@@ -2,16 +2,17 @@ import { useState } from "react";
 import { useQuizContext } from "../context/QuizContext";
 
 function Button({ option, correct }) {
-  const { score, setScore, reveal, setRevealTrue } = useQuizContext();
+  const { setScore, reveal, setRevealTrue, setCorrect, setIncorrect } = useQuizContext();
   const [status, setStatus] = useState("idle");
   function handleClick() {
     if (reveal) return;
     if (option === correct) {
       setStatus("correct");
       setScore((prevScore) => prevScore + 1);
+      setCorrect((prevCorrect) => prevCorrect + 1);
     } else {
       setStatus("incorrect");
-      setScore((prevScore) => (prevScore <= 0 ? prevScore : prevScore - 1));
+      setIncorrect((prevIncorrect) => prevIncorrect + 1);
     }
     setRevealTrue();
   }

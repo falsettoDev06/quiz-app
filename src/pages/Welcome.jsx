@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useQuizContext } from "../context/QuizContext";
 function Welcome() {
-  const { handleStart } = useQuizContext();
+  const { handleStart} = useQuizContext();
   const navigate = useNavigate();
   const handleStartBtn = () => {
     handleStart();
