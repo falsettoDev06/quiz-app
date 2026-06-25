@@ -45,7 +45,7 @@ function QuizPlay() {
             <i className="fa-solid fa-stopwatch text-5xl lg:text-7xl flex items-center"></i>
             <p className={handleCountdownColor()}>{smallTimer}</p>
           </div>
-            <QuizCard />
+          <QuizCard />
           <button
             className={`btn btn-accent btn-md lg:btn-lg w-80 h-15 my-2 lg:h-18 lg:w-100 rounded-full text-3xl shadow-xl transition-transform hover:scale-105 duration-100 ease-in-out ${!reveal || counter === 9 ? "invisible" : ""}`}
             onClick={addCounter}
@@ -53,7 +53,7 @@ function QuizPlay() {
             Next
           </button>
           <progress
-            className="progress progress-primary w-85 lg:w-250 h-4 my-3 transition-all duration-500 ease-in-out"
+            className="progress progress-primary w-[320px] lg:w-200 h-4 my-3 transition-all duration-500 ease-in-out"
             value={(counter + 1) * 10}
             max="100"
           ></progress>
