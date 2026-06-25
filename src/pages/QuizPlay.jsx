@@ -53,7 +53,7 @@ function QuizPlay() {
             Next
           </button>
           <progress
-            className="progress progress-primary w-[320px] lg:w-200 h-4 my-3 transition-all duration-500 ease-in-out"
+            className="progress progress-primary h-4 my-3 transition-all duration-500 ease-in-out w-[320px] lg:w-[800px]"
             value={(counter + 1) * 10}
             max="100"
           ></progress>
