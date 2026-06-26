@@ -5,6 +5,7 @@ import { Routes, Route } from "react-router-dom";
 import Welcome from "./pages/Welcome";
 import Results from "./pages/Results";
 import QuizPlay from "./pages/QuizPlay";
+import Mode from "./pages/Mode";
 
 //context
 import { QuizProvider } from "./context/QuizContext";
@@ -15,6 +16,7 @@ function App() {
       <QuizProvider>
         <Routes>
           <Route path="/" element={<Welcome />} />
+          <Route path="/mode" element={<Mode />} />
           <Route path="/quizplay" element={<QuizPlay />} />
           <Route path="/results" element={<Results />} />
         </Routes>
