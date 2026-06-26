@@ -1,13 +1,13 @@
-import { useState } from "react";
-import Button from "./Button";
 import { useQuizContext } from "../context/QuizContext";
+import Button from "./Button";
 
 function QuizCard() {
-  const { isLoading, easyQuiz, randomIndex } = useQuizContext();
-  if (isLoading || !easyQuiz[randomIndex])
+  const { quiz } = useQuizContext();
+  
+  if (quiz.isLoading || !quiz.quizData[quiz.randomIndex])
     return <span className="text-2xl">Still loading</span>;
 
-  const currentQuestion = easyQuiz[randomIndex];
+  const currentQuestion = quiz.quizData[quiz.randomIndex];
 
   return (
     <div className="card bg-base-100 shadow-xl items-center text-center w-90 h-auto lg:w-270 lg:h-187 py-10 lg:p-16 flex flex-col justify-start lg:justify-between">
@@ -16,7 +16,11 @@ function QuizCard() {
       </p>
       <div className="flex flex-col justify-center items-center py-3 lg:py-6">
         {currentQuestion.options.map((option, i) => (
-          <Button option={option} key={i} correct={currentQuestion.correct} />
+          <Button 
+            option={option} 
+            key={i} 
+            correct={currentQuestion.correct} 
+          />
         ))}
       </div>
     </div>

@@ -1,42 +1,51 @@
-function ModeCard({ mode }) {
-  // Define dynamic styles
+import { useNavigate } from "react-router-dom";
+import { useQuizContext } from "../context/QuizContext";
+
+function DifficultyCard({ difficulty }) {
   const config = {
-    Easy: {
+    easy: {
       border: "border-green-400",
       bg: "bg-green-400/20",
       text: "text-success",
       icon: "fa-leaf",
       numberOfQuestions: 10,
-      message: "Basic lang to saindo promise."
+      message: "Basic lang to saindo promise.",
     },
-    Medium: {
+    medium: {
       border: "border-yellow-400",
       bg: "bg-yellow-400/20",
       text: "text-warning",
       icon: "fa-bolt",
       numberOfQuestions: 25,
-      message: "Slight lang ang sakit."
+      message: "Slight lang ang sakit.",
     },
-    Hard: {
+    hard: {
       border: "border-red-400",
       bg: "bg-red-400/20",
       text: "text-error",
       icon: "fa-fire",
       numberOfQuestions: 50,
-      message: "Iyah maurag ka bagay kaya mo ini."
+      message: "Iyah maurag ka bagay kaya mo ini.",
     },
-    Impossible: {
+    impossible: {
       border: "border-purple-400",
       bg: "bg-purple-400/20",
       text: "text-purple-400",
       icon: "fa-skull",
       numberOfQuestions: 100,
-      message: "Arog kang maging kamo ni LANS."
+      message: "Arog kang maging kamo ni LANS.",
     },
   };
 
-  const { border, bg, text, icon } = config[mode];
+  const { border, bg, text, icon } = config[difficulty];
 
+  const { quiz, timer } = useQuizContext();
+  const navigate = useNavigate();
+  const handleDifficulty = () => {
+    quiz.setDifficulty(difficulty);
+    timer.handleStart();
+    navigate("/quizplay");
+  };
   return (
     <div
       className={`flex flex-row justify-between p-3 card rounded-2xl w-90 h-30 border-3 ${border} ${bg}`}
@@ -49,17 +58,17 @@ function ModeCard({ mode }) {
         </div>
 
         <div className="flex flex-col justify-start pl-2">
-          <h1 className="text-xl font-bold">{mode}</h1>
+          <h1 className="text-xl font-bold">{difficulty}</h1>
           <p
             className={`text-sm ${text}`}
-          >{`${config[mode].numberOfQuestions} Questions`}</p>
+          >{`${config[difficulty].numberOfQuestions} Questions`}</p>
           <p
             className={`text-sm text-base-content/70`}
-          >{`${config[mode].message}`}</p>
+          >{`${config[difficulty].message}`}</p>
         </div>
       </div>
       <div className="flex items-center justify-center">
-        <div
+        <div onClick={handleDifficulty}
           className={`w-10 h-10 rounded-full border flex items-center justify-center ${border} ${bg}`}
         >
           <i className={`fa-solid fa-angle-right ${text} text-3xl`}></i>
@@ -69,4 +78,4 @@ function ModeCard({ mode }) {
   );
 }
 
-export default ModeCard;
+export default DifficultyCard;

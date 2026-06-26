@@ -5,29 +5,33 @@ const QuizContext = createContext();
 export const useQuizContext = () => useContext(QuizContext);
 
 export const QuizProvider = ({ children }) => {
-  //Quizes states
-  const [easyQuiz, setEasyQuiz] = useState([]);
+  // 1. Quiz Logic States
+  const [quizData, setQuizData] = useState([]);
+  const [impossibleQuiz, setImpossibleQuiz] = useState([]);
+  const [randomIndex, setRandomIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [difficulty, setDifficulty] = useState("easy");
 
-
+  // 2. Game Progress & Scoring States
   const [score, setScore] = useState(0);
   const [correct, setCorrect] = useState(0);
   const [incorrect, setIncorrect] = useState(0);
   const [highest, setHighest] = useState(0);
+
+  // 3. UI & Reveal State
+  const [reveal, setReveal] = useState(false);
   const [counter, setCounter] = useState(0);
-  const [randomIndex, setRandomIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
 
   const setRevealTrue = () => setReveal(true);
   const setRevealFalse = () => setReveal(false);
-  const [reveal, setReveal] = useState(false);
 
-  //Stopwatch states
+  // 4. Timer/Stopwatch States & Refs
   const [smallTimer, setSmallTimer] = useState(30);
   const [isRunning, setIsRunning] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
+
   const intervalIdRef = useRef(null);
   const startTimeRef = useRef(null);
-
 
   useEffect(() => {
     if (reveal) return;
@@ -89,13 +93,13 @@ export const QuizProvider = ({ children }) => {
     setElapsedTime(0);
   };
 
-  //easy mode quiz
+
   useEffect(() => {
     const loadData = async () => {
       try {
-        const response = await fetch("/easyQuestions.json");
+        const response = await fetch(`/${difficulty}Questions.json`);
         const data = await response.json();
-        setEasyQuiz(data);
+        setQuizData(data);
         setRandomIndex(Math.floor(Math.random() * data.length));
       } catch (err) {
         console.error(err);
@@ -104,40 +108,58 @@ export const QuizProvider = ({ children }) => {
       }
     };
     loadData();
-  }, []);
+  }, [difficulty]);
 
   const randomizeQuestion = () => {
-    if (easyQuiz && easyQuiz.length > 0) {
-      const nextIndex = Math.floor(Math.random() * easyQuiz.length);
+    if (quizData && quizData.length > 0) {
+      const nextIndex = Math.floor(Math.random() * quizData.length);
       setRandomIndex(nextIndex);
     }
   };
+
   const value = {
-    setScore,
-    setRevealTrue,
-    setRevealFalse,
-    reduceCounter,
-    addCounter,
-    setCounter,
-    score,
-    reveal,
-    counter,
-    smallTimer,
-    isRunning,
-    formatTime,
-    handleStart,
-    handleStop,
-    handleReset,
-    easyQuiz,
-    randomizeQuestion,
-    randomIndex,
-    isLoading,
-    setCorrect,
-    setIncorrect,
-    correct,
-    incorrect,
-    highest,
-    setHighest,
+    // 1. Quiz Logic
+    quiz: { 
+      quizData,
+      setDifficulty,
+      difficulty,
+      randomIndex,
+      isLoading,
+      randomizeQuestion,
+    },
+
+    // 2. Game Progress & Scoring
+    stats: {
+      score,
+      setScore,
+      correct,
+      setCorrect,
+      incorrect,
+      setIncorrect,
+      highest,
+      setHighest,
+    },
+
+    // 3. UI & Reveal State
+    ui: {
+      reveal,
+      setRevealTrue,
+      setRevealFalse,
+      counter,
+      setCounter,
+      addCounter,
+      reduceCounter,
+    },
+
+    // 4. Timer/Stopwatch Functions
+    timer: {
+      smallTimer,
+      isRunning,
+      formatTime,
+      handleStart,
+      handleStop,
+      handleReset,
+    },
   };
   return <QuizContext.Provider value={value}>{children}</QuizContext.Provider>;
 };

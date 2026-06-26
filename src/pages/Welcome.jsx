@@ -1,11 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { useQuizContext } from "../context/QuizContext";
 function Welcome() {
-  const { handleStart} = useQuizContext();
   const navigate = useNavigate();
   const handleStartBtn = () => {
-    handleStart();
-    navigate("/quizplay");
+    navigate("/difficulties");
   };
   return (
     <div className="flex flex-col justify-center items-center w-screen h-screen bg-base-200">
