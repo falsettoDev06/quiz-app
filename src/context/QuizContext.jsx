@@ -1,87 +1,33 @@
 import { createContext, useContext, useState, useEffect, useRef } from "react";
 
-const quizData = [
-  {
-    id: 1,
-    question: "Which planet is known as the 'Red Planet'?",
-    options: ["Venus", "Mars", "Jupiter", "Saturn"],
-    correct: "Mars",
-  },
-  {
-    id: 2,
-    question: "What is the only fruit that has its seeds on the outside?",
-    options: ["Apple", "Strawberry", "Banana", "Pineapple"],
-    correct: "Strawberry",
-  },
-  {
-    id: 3,
-    question: "Which animal is known as the 'Ship of the Desert'?",
-    options: ["Camel", "Elephant", "Horse", "Donkey"],
-    correct: "Camel",
-  },
-  {
-    id: 4,
-    question: "What is the smallest country in the world by land area?",
-    options: ["Monaco", "Vatican City", "San Marino", "Malta"],
-    correct: "Vatican City",
-  },
-  {
-    id: 5,
-    question: "Which superhero is known as the 'Caped Crusader'?",
-    options: ["Superman", "Iron Man", "Batman", "Spider-Man"],
-    correct: "Batman",
-  },
-  {
-    id: 6,
-    question: "What is the hardest natural substance on Earth?",
-    options: ["Gold", "Iron", "Diamond", "Quartz"],
-    correct: "Diamond",
-  },
-  {
-    id: 7,
-    question: "Which company is famous for the slogan 'Just Do It'?",
-    options: ["Adidas", "Puma", "Nike", "Reebok"],
-    correct: "Nike",
-  },
-  {
-    id: 8,
-    question: "How many hearts does an octopus have?",
-    options: ["One", "Two", "Three", "Four"],
-    correct: "Three",
-  },
-  {
-    id: 9,
-    question: "Which language has the most native speakers in the world?",
-    options: ["English", "Spanish", "Mandarin Chinese", "Hindi"],
-    correct: "Mandarin Chinese",
-  },
-  {
-    id: 10,
-    question: "What is the largest mammal to ever live?",
-    options: ["African Elephant", "Blue Whale", "Giraffe", "Colossal Squid"],
-    correct: "Blue Whale",
-  },
-];
-
 const QuizContext = createContext();
 
 export const useQuizContext = () => useContext(QuizContext);
 
 export const QuizProvider = ({ children }) => {
+  //Quizes states
+  const [easyQuiz, setEasyQuiz] = useState([]);
+
+
   const [score, setScore] = useState(0);
+  const [correct, setCorrect] = useState(0);
+  const [incorrect, setIncorrect] = useState(0);
+  const [highest, setHighest] = useState(0);
   const [counter, setCounter] = useState(0);
+  const [randomIndex, setRandomIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   const setRevealTrue = () => setReveal(true);
   const setRevealFalse = () => setReveal(false);
   const [reveal, setReveal] = useState(false);
 
-  const [smallTimer, setSmallTimer] = useState(30);
-
   //Stopwatch states
+  const [smallTimer, setSmallTimer] = useState(30);
   const [isRunning, setIsRunning] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
   const intervalIdRef = useRef(null);
   const startTimeRef = useRef(null);
+
 
   useEffect(() => {
     if (reveal) return;
@@ -109,6 +55,7 @@ export const QuizProvider = ({ children }) => {
   };
   const addCounter = () => {
     setRevealFalse();
+    randomizeQuestion();
     setCounter((prev) => (prev === 9 ? prev : prev + 1));
   };
 
@@ -141,6 +88,30 @@ export const QuizProvider = ({ children }) => {
     setIsRunning(false);
     setElapsedTime(0);
   };
+
+  //easy mode quiz
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const response = await fetch("/easyQuestions.json");
+        const data = await response.json();
+        setEasyQuiz(data);
+        setRandomIndex(Math.floor(Math.random() * data.length));
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsLoading(false); // Only set to false when data is actually ready
+      }
+    };
+    loadData();
+  }, []);
+
+  const randomizeQuestion = () => {
+    if (easyQuiz && easyQuiz.length > 0) {
+      const nextIndex = Math.floor(Math.random() * easyQuiz.length);
+      setRandomIndex(nextIndex);
+    }
+  };
   const value = {
     setScore,
     setRevealTrue,
@@ -152,12 +123,21 @@ export const QuizProvider = ({ children }) => {
     reveal,
     counter,
     smallTimer,
-    quizData,
     isRunning,
     formatTime,
     handleStart,
     handleStop,
     handleReset,
+    easyQuiz,
+    randomizeQuestion,
+    randomIndex,
+    isLoading,
+    setCorrect,
+    setIncorrect,
+    correct,
+    incorrect,
+    highest,
+    setHighest,
   };
   return <QuizContext.Provider value={value}>{children}</QuizContext.Provider>;
 };
