@@ -20,8 +20,9 @@ function Button({ option, correct }) {
   }
 
   function getStatusColor() {
+    const isLongWord = option.length > 30;
     const base =
-      "w-85 h-15 lg:w-200 lg:h-25 rounded-2xl lg:rounded-4xl font-bold cursor-pointer my-2 text-xl lg:text-3xl transition-transform hover:scale-105 duration-100";
+      `w-85 h-15 lg:w-200 lg:h-25 rounded-2xl lg:rounded-4xl font-bold cursor-pointer my-2 ${isLongWord? "text-sm" : "text-xl"} lg:text-3xl transition-transform hover:scale-105 duration-100`;
     if (!ui.reveal) {
       return `${base} border-2 lg:border-4 border-primary`;
     }

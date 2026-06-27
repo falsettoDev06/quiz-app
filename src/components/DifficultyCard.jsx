@@ -2,6 +2,9 @@ import { useNavigate } from "react-router-dom";
 import { useQuizContext } from "../context/QuizContext";
 
 function DifficultyCard({ difficulty }) {
+  const { quiz, timer, ui } = useQuizContext();
+  const navigate = useNavigate();
+
   const config = {
     easy: {
       border: "border-green-400",
@@ -37,41 +40,41 @@ function DifficultyCard({ difficulty }) {
     },
   };
 
-  const { border, bg, text, icon } = config[difficulty];
+  const safeDifficulty = config[difficulty] ? difficulty : "easy";
+  const { border, bg, text, icon, numberOfQuestions, message } = config[safeDifficulty];
 
-  const { quiz, timer } = useQuizContext();
-  const navigate = useNavigate();
   const handleDifficulty = () => {
-    quiz.setDifficulty(difficulty);
-    timer.handleStart();
+    ui.setCounter(0);
+    ui.setRevealFalse();
+    quiz.setDifficulty(safeDifficulty);
+    timer.handleReset();
     navigate("/quizplay");
   };
+
   return (
     <div
-      className={`flex flex-row justify-between p-3 card rounded-2xl w-90 h-30 border-3 ${border} ${bg}`}
+      onClick={handleDifficulty}
+      className={`card flex flex-row justify-between items-center p-4 rounded-2xl w-90 h-30 border-3 ${border} ${bg} cursor-pointer lg:w-113 lg:h-40 lg:p-6`}
     >
-      <div className="flex flex-row">
-        <div
-          className={`w-20 h-20 rounded-full border flex items-center justify-center ${border} ${bg}`}
-        >
-          <i className={`fa-solid ${icon} ${text} text-3xl`}></i>
+      <div className="flex flex-row items-center gap-3">
+        <div className={`w-15 h-15 rounded-full border flex items-center justify-center ${border} ${bg} lg:w-20 lg:h-20`}>
+          <i className={`fa-solid ${icon} ${text} text-3xl lg:text-4xl`}></i>
         </div>
 
-        <div className="flex flex-col justify-start pl-2">
-          <h1 className="text-xl font-bold">{difficulty}</h1>
-          <p
-            className={`text-sm ${text}`}
-          >{`${config[difficulty].numberOfQuestions} Questions`}</p>
-          <p
-            className={`text-sm text-base-content/70`}
-          >{`${config[difficulty].message}`}</p>
+        <div className="flex flex-col justify-center">
+          <h1 className={`text-xl font-bold uppercase ${text} lg:text-2xl`}>
+            {safeDifficulty}
+          </h1>
+          <p className={`text-sm font-semibold ${text} lg:text-base`}>
+            {numberOfQuestions} Questions
+          </p>
+          <p className="text-xs text-base-content/70 lg:text-sm">{message}</p>
         </div>
       </div>
+
       <div className="flex items-center justify-center">
-        <div onClick={handleDifficulty}
-          className={`w-10 h-10 rounded-full border flex items-center justify-center ${border} ${bg}`}
-        >
-          <i className={`fa-solid fa-angle-right ${text} text-3xl`}></i>
+        <div className={`w-10 h-10 rounded-full border flex items-center justify-center ${border} ${bg} lg:w-14 lg:h-14`}>
+          <i className={`fa-solid fa-angle-right ${text} text-3xl lg:text-4xl`}></i>
         </div>
       </div>
     </div>

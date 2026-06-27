@@ -8,7 +8,6 @@ function Results() {
   const navigate = useNavigate();
 
   const handlePlayAgain = () => {
-    // Accessing through grouped objects
     ui.setCounter(0);
     ui.setRevealFalse();
     stats.setScore(0);

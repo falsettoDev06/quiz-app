@@ -1,11 +1,29 @@
+import { useEffect } from "react";
 import { useQuizContext } from "../context/QuizContext";
 import Button from "./Button";
 
 function QuizCard() {
-  const { quiz } = useQuizContext();
-  
-  if (quiz.isLoading || !quiz.quizData[quiz.randomIndex])
+  const { quiz, timer, ui } = useQuizContext();
+
+  // Hooks must run unconditionally (Rules of Hooks)
+  useEffect(() => {
+    const currentQuestion = quiz.quizData?.[quiz.randomIndex];
+    if (!currentQuestion) return;
+
+    if (timer.smallTimer === 0 && !ui.reveal) {
+      ui.addCounter();
+    }
+  }, [
+    timer.smallTimer,
+    ui.reveal,
+    ui.addCounter,
+    quiz.quizData,
+    quiz.randomIndex,
+  ]);
+
+  if (quiz.isLoading || !quiz.quizData[quiz.randomIndex]) {
     return <span className="text-2xl">Still loading</span>;
+  }
 
   const currentQuestion = quiz.quizData[quiz.randomIndex];
 
@@ -16,11 +34,7 @@ function QuizCard() {
       </p>
       <div className="flex flex-col justify-center items-center py-3 lg:py-6">
         {currentQuestion.options.map((option, i) => (
-          <Button 
-            option={option} 
-            key={i} 
-            correct={currentQuestion.correct} 
-          />
+          <Button option={option} key={i} correct={currentQuestion.correct} />
         ))}
       </div>
     </div>

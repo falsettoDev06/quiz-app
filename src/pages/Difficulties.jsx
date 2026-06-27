@@ -19,7 +19,7 @@ function Difficulties() {
         <DifficultyCard difficulty="impossible"></DifficultyCard>
       </div>
       <div className="flex justify-center mt-6">
-        <div className="flex items-center p-4 w-75 h-auto bg-base-200 border border-base-300 rounded-2xl shadow-sm">
+        <div className="flex items-center p-4 w-75 h-auto bg-base-100 border border-base-300 rounded-2xl shadow-sm">
           <div className="text-primary mr-3 text-xl">
             <i className="fa-solid fa-circle-info"></i>
           </div>
