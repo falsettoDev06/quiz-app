@@ -107,6 +107,7 @@ export const QuizProvider = ({ children }) => {
   const handleReset = () => {
     setIsRunning(false);
     setElapsedTime(0);
+    setSmallTimer(30);
   };
 
   useEffect(() => {
