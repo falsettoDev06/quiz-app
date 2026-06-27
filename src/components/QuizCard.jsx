@@ -1,13 +1,31 @@
-import { useState } from "react";
-import Button from "./Button";
+import { useEffect } from "react";
 import { useQuizContext } from "../context/QuizContext";
+import Button from "./Button";
 
 function QuizCard() {
-  const { isLoading, easyQuiz, randomIndex } = useQuizContext();
-  if (isLoading || !easyQuiz[randomIndex])
-    return <span className="text-2xl">Still loading</span>;
+  const { quiz, timer, ui } = useQuizContext();
 
-  const currentQuestion = easyQuiz[randomIndex];
+  // Hooks must run unconditionally (Rules of Hooks)
+  useEffect(() => {
+    const currentQuestion = quiz.quizData?.[quiz.randomIndex];
+    if (!currentQuestion) return;
+
+    if (timer.smallTimer === 0 && !ui.reveal) {
+      ui.addCounter();
+    }
+  }, [
+    timer.smallTimer,
+    ui.reveal,
+    ui.addCounter,
+    quiz.quizData,
+    quiz.randomIndex,
+  ]);
+
+  if (quiz.isLoading || !quiz.quizData[quiz.randomIndex]) {
+    return <span className="text-2xl">Still loading</span>;
+  }
+
+  const currentQuestion = quiz.quizData[quiz.randomIndex];
 
   return (
     <div className="card bg-base-100 shadow-xl items-center text-center w-90 h-auto lg:w-270 lg:h-187 py-10 lg:p-16 flex flex-col justify-start lg:justify-between">

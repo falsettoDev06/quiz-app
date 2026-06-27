@@ -1,66 +1,89 @@
-import { createContext, useContext, useState, useEffect, useRef } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+} from "react";
 
 const QuizContext = createContext();
-
 export const useQuizContext = () => useContext(QuizContext);
 
 export const QuizProvider = ({ children }) => {
-  //Quizes states
-  const [easyQuiz, setEasyQuiz] = useState([]);
-
+  const [quizData, setQuizData] = useState([]);
+  const [randomIndex, setRandomIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [difficulty, setDifficulty] = useState("easy");
 
   const [score, setScore] = useState(0);
   const [correct, setCorrect] = useState(0);
   const [incorrect, setIncorrect] = useState(0);
   const [highest, setHighest] = useState(0);
-  const [counter, setCounter] = useState(0);
-  const [randomIndex, setRandomIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
 
+  const [reveal, setReveal] = useState(false);
+  const [counter, setCounter] = useState(0);
   const setRevealTrue = () => setReveal(true);
   const setRevealFalse = () => setReveal(false);
-  const [reveal, setReveal] = useState(false);
 
-  //Stopwatch states
   const [smallTimer, setSmallTimer] = useState(30);
   const [isRunning, setIsRunning] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
+
   const intervalIdRef = useRef(null);
   const startTimeRef = useRef(null);
 
+  const getLimit = useCallback((diff) => {
+    switch (diff) {
+      case "easy":
+        return 10;
+      case "medium":
+        return 25;
+      case "hard":
+        return 50;
+      case "impossible":
+        return 100;
+      default:
+        return 10;
+    }
+  }, []);
 
+  const limit = getLimit(difficulty);
+
+  const addCounter = useCallback(() => {
+    setRevealFalse();
+    setSmallTimer(30);
+    setCounter((prev) => {
+      if (prev >= limit - 1) {
+        setIsRunning(false);
+        return prev;
+      }
+      return prev + 1;
+    });
+    setRandomIndex(Math.floor(Math.random() * quizData.length));
+  }, [limit, quizData]);
   useEffect(() => {
-    if (reveal) return;
-    const startTime = Date.now();
+    if (reveal || counter >= limit - 1) return;
 
     const timer = setInterval(() => {
-      const elapsed = Math.floor((Date.now() - startTime) / 1000);
-      const remaining = 30 - elapsed;
-
-      if (remaining <= 0) {
-        setCounter((c) => (c === 9 ? c : c + 1));
-        setSmallTimer(30);
-        setRevealFalse();
-      } else {
-        setSmallTimer(remaining);
-      }
+      setSmallTimer((prev) => {
+        if (prev <= 1) {
+          addCounter();
+          return 30;
+        }
+        return prev - 1;
+      });
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [counter, reveal, setReveal]);
+  }, [counter, reveal, limit, addCounter]);
 
-  const reduceCounter = () => {
-    setRevealFalse();
-    setCounter((prev) => (prev === 0 ? prev : prev - 1));
-  };
-  const addCounter = () => {
-    setRevealFalse();
-    randomizeQuestion();
-    setCounter((prev) => (prev === 9 ? prev : prev + 1));
-  };
-
-  //Stopwatch
   useEffect(() => {
+    if (counter >= limit - 1) {
+      setIsRunning(false);
+      return;
+    }
+
     if (isRunning) {
       startTimeRef.current = Date.now() - elapsedTime;
       intervalIdRef.current = setInterval(() => {
@@ -69,75 +92,76 @@ export const QuizProvider = ({ children }) => {
     } else {
       clearInterval(intervalIdRef.current);
     }
-  }, [isRunning]);
+    return () => clearInterval(intervalIdRef.current);
+  }, [isRunning, counter, limit]);
+
   const formatTime = () => {
-    const minutes = Math.floor(counter / 60);
-    const seconds = counter % 60;
+    const totalSeconds = Math.floor(elapsedTime / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
-  const padZero = (num) => {
-    return (num < 10 ? "0" : "") + num;
-  };
-  const handleStart = () => {
-    setIsRunning(true);
-  };
-  const handleStop = () => {
-    setIsRunning(false);
-  };
+
+  const handleStart = () => setIsRunning(true);
+  const handleStop = () => setIsRunning(false);
   const handleReset = () => {
     setIsRunning(false);
     setElapsedTime(0);
   };
 
-  //easy mode quiz
   useEffect(() => {
     const loadData = async () => {
       try {
-        const response = await fetch("/easyQuestions.json");
+        setIsLoading(true);
+        const response = await fetch(`/${difficulty}Questions.json`);
         const data = await response.json();
-        setEasyQuiz(data);
+        setQuizData(data);
         setRandomIndex(Math.floor(Math.random() * data.length));
       } catch (err) {
         console.error(err);
       } finally {
-        setIsLoading(false); // Only set to false when data is actually ready
+        setIsLoading(false);
       }
     };
     loadData();
-  }, []);
+  }, [difficulty]);
 
-  const randomizeQuestion = () => {
-    if (easyQuiz && easyQuiz.length > 0) {
-      const nextIndex = Math.floor(Math.random() * easyQuiz.length);
-      setRandomIndex(nextIndex);
-    }
-  };
   const value = {
-    setScore,
-    setRevealTrue,
-    setRevealFalse,
-    reduceCounter,
-    addCounter,
-    setCounter,
-    score,
-    reveal,
-    counter,
-    smallTimer,
-    isRunning,
-    formatTime,
-    handleStart,
-    handleStop,
-    handleReset,
-    easyQuiz,
-    randomizeQuestion,
-    randomIndex,
-    isLoading,
-    setCorrect,
-    setIncorrect,
-    correct,
-    incorrect,
-    highest,
-    setHighest,
+    quiz: {
+      quizData,
+      setDifficulty,
+      difficulty,
+      randomIndex,
+      isLoading,
+      getLimit,
+    },
+    stats: {
+      score,
+      setScore,
+      correct,
+      setCorrect,
+      incorrect,
+      setIncorrect,
+      highest,
+      setHighest,
+    },
+    ui: {
+      reveal,
+      setRevealTrue,
+      setRevealFalse,
+      counter,
+      setCounter,
+      addCounter,
+    },
+    timer: {
+      smallTimer,
+      isRunning,
+      formatTime,
+      handleStart,
+      handleStop,
+      handleReset,
+    },
   };
+
   return <QuizContext.Provider value={value}>{children}</QuizContext.Provider>;
 };

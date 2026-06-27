@@ -2,25 +2,28 @@ import { useState } from "react";
 import { useQuizContext } from "../context/QuizContext";
 
 function Button({ option, correct }) {
-  const { setScore, reveal, setRevealTrue, setCorrect, setIncorrect } = useQuizContext();
+  const { stats, ui } = useQuizContext();
+  
   const [status, setStatus] = useState("idle");
+
   function handleClick() {
-    if (reveal) return;
+    if (ui.reveal) return;
     if (option === correct) {
       setStatus("correct");
-      setScore((prevScore) => prevScore + 1);
-      setCorrect((prevCorrect) => prevCorrect + 1);
+      stats.setScore((prevScore) => prevScore + 1);
+      stats.setCorrect((prevCorrect) => prevCorrect + 1);
     } else {
       setStatus("incorrect");
-      setIncorrect((prevIncorrect) => prevIncorrect + 1);
+      stats.setIncorrect((prevIncorrect) => prevIncorrect + 1);
     }
-    setRevealTrue();
+    ui.setRevealTrue();
   }
-  function getStatusColor() {
-    const base =
-      "w-85 h-15 lg:w-200 lg:h-25 rounded-2xl lg:rounded-4xl font-bold cursor-pointer my-2 text-xl lg:text-3xl transition-transform hover:scale-105 duration-100";
 
-    if (!reveal) {
+  function getStatusColor() {
+    const isLongWord = option.length > 30;
+    const base =
+      `w-85 h-15 lg:w-200 lg:h-25 rounded-2xl lg:rounded-4xl font-bold cursor-pointer my-2 ${isLongWord? "text-sm" : "text-xl"} lg:text-3xl transition-transform hover:scale-105 duration-100`;
+    if (!ui.reveal) {
       return `${base} border-2 lg:border-4 border-primary`;
     }
 
@@ -31,6 +34,7 @@ function Button({ option, correct }) {
 
     return `${base} border-4 lg:border-8 ${colorClass}`;
   }
+
   return (
     <button className={getStatusColor()} onClick={handleClick}>
       {option}
